@@ -30,7 +30,7 @@
 ##' @references Keribin, Celeux and Robert, The Latent Block Model: a useful model for high dimensional data.
 ##' https://hal.inria.fr/hal-01658589/document
 ##'
-##' Govaert and Nadif. Coclustering, Wyley (2013).
+##' Govaert and Nadif. Co-clustering, Wyley (2013).
 ##'
 ##' Keribin, Brault and Celeux. Estimation and Selection for the Latent Block Model on Categorical Data, Statistics and Computing (2014).
 ##'
@@ -1955,7 +1955,7 @@ PoissonBlocRnd =function (J,K,theta){
 
 ##' PoissonBlocVisu function for visualization of contingency datasets
 ##'
-##' Produce a plot object representing the coclustered data-sets.
+##' Produce a plot object representing the co-clustered data-sets.
 ##'
 ##' @param x contingency matrix of observations.
 ##' @param v a numeric vector specifying the class of rows.
@@ -1975,7 +1975,7 @@ PoissonBlocRnd =function (J,K,theta){
 ##' theta$tau_l=1/l *matrix(1,l,1)
 ##' theta$gamma_hl=matrix(c(1, 6,4, 1, 7, 1),ncol=2)
 ##' data=PoissonBlocRnd(J,K,theta)
-##' PoissonBlocVisu(data$x, data$xrow,data$xcol)
+##' PoissonBlocVisu(data$x,data$xrow,data$xcol)
 ##' @export PoissonBlocVisu
 
 PoissonBlocVisu=function(x,v,w){
@@ -2032,7 +2032,7 @@ PoissonBlocVisu=function(x,v,w){
 ##' theta$tau_l=1/l *matrix(1,l,1)
 ##' theta$gamma_hl=matrix(c(1, 6,4, 1, 7, 1),ncol=2)
 ##' data=PoissonBlocRnd(J,K,theta)
-##' PoissonBlocVisuResum(data$x, data$xrow,data$xcol)
+##' PoissonBlocVisuResum(data$x,data$xrow,data$xcol)
 ##' @export PoissonBlocVisuResum
 
 
@@ -2049,10 +2049,10 @@ PoissonBlocVisuResum=function(x,v,w){
   ## Affichage
   nh=colSums(v_jh)
   nl=colSums(w_jl)
-  nhl=nh%*%t(nl)
+  Nhl=nh%*%t(nl)
   nhl=t(v_jh)%*%x%*%w_jl
 
-  table.paint(nhl/nhl)
+  table.paint(nhl/Nhl)
 
 }
 
@@ -2145,23 +2145,23 @@ ARI=function(v,vprime){
 
 
 
-##' CARI function for agreement between coclustering partitions
+##' CARI function for agreement between co-clustering partitions
 ##'
-##' Produce a measure of agreement between two pairs of partitions for coclustering. A value of 1 means a perfect match.
+##' Produce a measure of agreement between two pairs of partitions for co-clustering. A value of 1 means a perfect match.
 ##'
 ##' @param v numeric vector  specifying the class of  rows.
 ##' @param w numeric vector specifying the class of columns.
-##' @param vprime numeric vector  specifying another partitions of rows.
+##' @param vprime numeric vector  specifying another partition of rows.
 ##' @param wprime numeric vector specifying another partition of columns.
 ##' @return a list including the arguments:
 ##'
-##' \code{cari}: value of the index.
+##' \code{cari}: value of the index. (between 0 and 1). A value of 1 corresponds to a perfect match.
 ##'
 ##' \code{nvw}: contingency table which the index is based on.
 ##'
 ##' @usage CARI(v,w,vprime,wprime)
 ##' @rdname CARI-proc
-##' @references Robert and Vasseur. Comparing high dimensional partitions with the Coclustering Adjusted Rand Index, Preprint (2017).
+##' @references Robert and Vasseur. Comparing high dimensional partitions with the Co-clustering Adjusted Rand Index, Preprint (2017).
 ##' @examples
 ##' \donttest{require(bikm1)
 ##' J=200
@@ -2227,7 +2227,7 @@ CARI=function(v,w,vprime,wprime){
 
 ##' PoissonBlocBIC function for the computation of the BIC criterion in the Poisson LBM
 ##'
-##' Produce a value of the BIC criterion for coclustering partitions
+##' Produce a value of the BIC criterion for co-clustering partitions
 ##' @param a hyperparameter used in the VBayes algorithm for priors on the mixing proportions. By default, a=4.
 ##' @param alpha hyperparameter used in the VBayes algorithm for prior on the Poisson parameter. By default, alpha=1.
 ##' @param beta hyperparameter used in the VBayes algorithm for prior on the Poisson parameter. By default, beta=0.01.
@@ -2256,7 +2256,7 @@ CARI=function(v,w,vprime,wprime){
 ##' theta$gamma_hl=matrix(c(1, 6,4, 1, 7, 1),ncol=2)
 ##' data=PoissonBlocRnd(J,K,theta)
 ##' res=BIKM1_LBM_Poisson(data$x,3,3,4,init_choice='smallVBayes')
-##' bic=PoissonBlocBIC(res@model_max$v,res@model_max$w,data$x,res,normalization=TRUE)}
+##' bic=PoissonBlocBIC(v1=res@model_max$v,w1=res@model_max$w,x=data$x,res=res,normalization=TRUE)}
 ##' @export PoissonBlocBIC
 
 
@@ -2309,7 +2309,7 @@ PoissonBlocBIC =function (a=4,alpha=1,beta=0.01,v1,w1,x,res,normalization=TRUE){
 
 ##' PoissonBlocICL function for the computation of the ICL criterion in the Poisson LBM
 ##'
-##' Produce a value of the ICL criterion for coclustering partitions
+##' Produce a value of the ICL criterion for co-clustering partitions
 ##' @param a hyperparameter used in the VBayes algorithm for priors on the mixing proportions. By default, a=4.
 ##' @param alpha hyperparameter used in the VBayes algorithm for prior on the Poisson parameter. By default, alpha=1.
 ##' @param beta hyperparameter used in the VBayes algorithm for prior on the Poisson parameter. By default, beta=0.01.

@@ -30,5 +30,5 @@ theta$rho_h=1/h *matrix(1,h,1)
 theta$tau_l=1/l *matrix(1,l,1)
 theta$gamma_hl=matrix(c(1, 6,4, 1, 7, 1),ncol=2)
 data=PoissonBlocRnd(J,K,theta)
-PoissonBlocVisuResum(data$x, data$xrow,data$xcol)
+PoissonBlocVisuResum(data$x,data$xrow,data$xcol)
 }

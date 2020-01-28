@@ -42,7 +42,7 @@ Produce two simulated data matrices generated under the Binary Multiple Latent B
 }
 \examples{
 require(bikm1)
-##' set.seed(42)
+ set.seed(42)
 n=200
 J=120
 K=120

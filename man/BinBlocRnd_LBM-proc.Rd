@@ -33,7 +33,7 @@ Produce a data matrix generated under the Binary Latent Block Model.
 }
 \examples{
 require(bikm1)
-##' set.seed(42)
+set.seed(42)
 n=200
 J=120
 g=3

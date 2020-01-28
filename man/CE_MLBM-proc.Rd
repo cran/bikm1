@@ -2,7 +2,7 @@
 % Please edit documentation in R/bikm1_MLBM_Binary_functions.R
 \name{CE_MLBM}
 \alias{CE_MLBM}
-\title{CE_MLBM function for agreement between coclustering partitions in the MBLM}
+\title{CE_MLBM function for agreement between co-clustering partitions in the MBLM}
 \usage{
 CE_MLBM(z,v,w,zprime,vprime,wprime)
 }
@@ -20,13 +20,13 @@ CE_MLBM(z,v,w,zprime,vprime,wprime)
 \item{wprime}{numeric vector specifying another partition of columns for the second matrix.}
 }
 \value{
-a the value of the index
+the value of the index (between 0 and 1). A value of 0 corresponds to a perfect match.
 }
 \description{
-Produce a measure of agreement between two triplets of partitions for coclustering. A value of 1 means a perfect match.
+Produce a measure of agreement between two triplets of partitions for co-clustering. A value of 1 means a perfect match.
 }
 \examples{
-\donttest{require(bikm1)
+\donttest{
 require(bikm1)
 set.seed(42)
 n=200

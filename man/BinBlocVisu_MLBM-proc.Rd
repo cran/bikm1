@@ -21,7 +21,7 @@ BinBlocVisu_MLBM(x,y,z,v,w)
 a \pkg{plot} object
 }
 \description{
-Produce a plot object representing the coclustered data-sets.
+Produce a plot object representing the co-clustered data-sets.
 }
 \examples{
 

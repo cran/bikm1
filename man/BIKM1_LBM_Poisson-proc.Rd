@@ -88,7 +88,7 @@ init_choice='user',userparam=list(v=data$xrow,w=data$xcol))
 Keribin, Celeux and Robert, The Latent Block Model: a useful model for high dimensional data.
 https://hal.inria.fr/hal-01658589/document
 
-Govaert and Nadif. Coclustering, Wyley (2013).
+Govaert and Nadif. Co-clustering, Wyley (2013).
 
 Keribin, Brault and Celeux. Estimation and Selection for the Latent Block Model on Categorical Data, Statistics and Computing (2014).
 

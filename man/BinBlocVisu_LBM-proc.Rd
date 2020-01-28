@@ -17,7 +17,7 @@ BinBlocVisu_LBM(x,z,v)
 a \pkg{plot} object
 }
 \description{
-Produce a plot object representing the coclustered data-sets.
+Produce a plot object representing the co-clustered data-sets.
 }
 \examples{
 
@@ -32,5 +32,5 @@ theta$pi_g=1/g *matrix(1,g,1)
 theta$rho_h=1/h *matrix(1,h,1)
 theta$alpha_gh=matrix(runif(6),ncol=h)
 data=BinBlocRnd_LBM(n,J,theta)
-BinBlocVisu_LBM(data$x, data$xrow,data$xcol)
+BinBlocVisu_LBM(data$x,data$xrow,data$xcol)
 }

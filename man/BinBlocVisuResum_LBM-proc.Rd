@@ -17,7 +17,7 @@ BinBlocVisuResum_LBM(x,z,v)
 a \pkg{plot} object.
 }
 \description{
-Produce a plot object representing the resumed coclustered data-sets.
+Produce a plot object representing the resumed co-clustered data-sets.
 }
 \examples{
 require(bikm1)
@@ -31,5 +31,5 @@ theta$pi_g=1/g *matrix(1,g,1)
 theta$rho_h=1/h *matrix(1,h,1)
 theta$alpha_gh=matrix(runif(6),ncol=h)
 data=BinBlocRnd_LBM(n,J,theta)
-BinBlocVisuResum_LBM(data$x, data$xrow,data$xcol)
+BinBlocVisuResum_LBM(data$x,data$xrow,data$xcol)
 }

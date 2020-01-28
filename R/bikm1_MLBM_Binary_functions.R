@@ -28,7 +28,7 @@
 ##' By default, mc.cores=1.
 ##' @param verbose logical. To display each step and the result. By default verbose=TRUE.
 ##' @rdname BIKM1_MLBM_Binary-proc
-##' @references Govaert and Nadif. Coclustering, Wyley (2013).
+##' @references Govaert and Nadif. Co-clustering, Wyley (2013).
 ##'
 ##' Keribin, Brault and Celeux. Estimation and Selection for the Latent Block Model on Categorical Data, Statistics and Computing (2014).
 ##'
@@ -663,7 +663,7 @@ BIKM1_MLBM_Binary=function(x,y,Gmax,Hmax,Lmax,a=4,b=1,Gstart=2,Hstart=2,Lstart=2
    }else {stop("This is not a initialization choice proposed by the procedure")}
 
   if (criterion_choice=='ICL'){
-     Critere= BinBlocICL(a,b,x,y,relopt$z,relopt$v,relopt$w)
+     Critere= BinBlocICL_MLBM(a,b,x,y,relopt$z,relopt$v,relopt$w)
   # else if (criterion_choice=='BIC'){
   #   Critere= PoissonBlocBIC(a,alpha,beta,data,relopt,normalization)
   # }
@@ -841,7 +841,7 @@ BIKM1_MLBM_Binary=function(x,y,Gmax,Hmax,Lmax,a=4,b=1,Gstart=2,Hstart=2,Lstart=2
     if (W_ligne>W_colonnex && W_ligne>W_colonney){
       modele=modele_ligne
       if (criterion_choice=='ICL'){
-        Critere= BinBlocICL(a,b,x,y,modele$z,modele$v,modele$w)
+        Critere= BinBlocICL_MLBM(a,b,x,y,modele$z,modele$v,modele$w)
       # }else if (criterion_choice=='BIC'){
       #   Critere= PoissonBlocBIC(a,alpha,beta,data,modele,normalization)
       }
@@ -861,7 +861,7 @@ BIKM1_MLBM_Binary=function(x,y,Gmax,Hmax,Lmax,a=4,b=1,Gstart=2,Hstart=2,Lstart=2
     }else if (W_colonnex>W_ligne && W_colonnex>W_colonney) {
       modele=modele_colonnex
       if (criterion_choice=='ICL'){
-        Critere= BinBlocICL(a,b,x,y,modele$z,modele$v,modele$w)
+        Critere= BinBlocICL_MLBM(a,b,x,y,modele$z,modele$v,modele$w)
       # }else if (criterion_choice=='BIC'){
       #   Critere= PoissonBlocBIC(a,alpha,beta,data,modele,normalization)
       }
@@ -883,7 +883,7 @@ BIKM1_MLBM_Binary=function(x,y,Gmax,Hmax,Lmax,a=4,b=1,Gstart=2,Hstart=2,Lstart=2
     }
     else {modele=modele_colonney
     if (criterion_choice=='ICL'){
-      Critere= BinBlocICL(a,b,x,y,modele$z,modele$v,modele$w)
+      Critere= BinBlocICL_MLBM(a,b,x,y,modele$z,modele$v,modele$w)
       # }else if (criterion_choice=='BIC'){
       #   Critere= PoissonBlocBIC(a,alpha,beta,data,modele,normalization)
     }
@@ -945,7 +945,7 @@ BIKM1_MLBM_Binary=function(x,y,Gmax,Hmax,Lmax,a=4,b=1,Gstart=2,Hstart=2,Lstart=2
 ##'
 ##' @examples
 ##' require(bikm1)
-##' ##' set.seed(42)
+##'  set.seed(42)
   ##' n=200
   ##' J=120
   ##' K=120
@@ -1009,7 +1009,7 @@ BinBlocRnd_MLBM =function (n,J,K,theta){
 
 ##' BinBlocVisu_MLBM function for visualization of double matrix datasets
 ##'
-##' Produce a plot object representing the coclustered data-sets.
+##' Produce a plot object representing the co-clustered data-sets.
 ##'
 ##' @param x first data matrix of observations.
 ##' @param y second data matrix of observations.
@@ -1084,7 +1084,7 @@ BinBlocVisu_MLBM=function(x,y,z,v,w){
 
 ##' BinBlocVisuResum_MLBM function  for visualization of double matrix datasets
 ##'
-##' Produce a plot object representing the resumed coclustered data-sets.
+##' Produce a plot object representing the resumed co-clustered data-sets.
 ##'
 ##' @param x binary matrix of observations.
 ##' @param y binary second matrix of observations.
@@ -1162,12 +1162,12 @@ BinBlocVisuResum_MLBM=function(x,y,z,v,w){
 ##' @param z numeric vector  specifying the class of  rows.
 ##' @param zprime numeric vector  specifying the class of  rows.
 ##'
-##' @return the value of the index
+##' @return the value of the index.(between 0 and 1). A value of 0 corresponds to a perfect match.
 ##'
 ##' @usage CE_simple(z,zprime)
 ##' @rdname CE_simple-proc
 ##' @examples
-##' \donttest{require(bikm1)
+##' \donttest{
 ##' require(bikm1)
 ##' set.seed(42)
 ##' z=floor(runif(4)*3)
@@ -1197,47 +1197,113 @@ CE_simple=function(z,zprime){
   #t='Adlab:PartDist';
   #if nargin ~= 2, error(t,'2 arguments.'); end
 
-  n1=length(z)
-  n2=length(zprime)
-  if (n1!=n2) warning('Size of partitions incorrect.')
-  g1=max(z)
-  permutation=permutations(g1,g1,1:g1)
-  nperm=dim(permutation)[1]
-  dd=numeric(nperm)
-  for (i in 1:nperm){
-    p=t(permutation[i,])
-    dd[i]=sum(p[1,z]!=zprime)
+  # n1=length(z)
+  # n2=length(zprime)
+  # if (n1!=n2) warning('Size of partitions incorrect.')
+  # g1=max(z)
+  # permutation=permutations(factorial(g1),g1,1:g1)
+  # nperm=dim(permutation)[1]
+  # dd=matrix(0,1,nperm)
+  # for (i in 1:nperm){
+  #   p=t(permutation[i,])
+  #   dd[1,i]=sum(p[1,z]!=zprime)
+  # }
+  # d=min(dd)
+  # i=which.min(dd)
+  # d=d/n1
+  # p1=permutation[i,]
+  # tmp=sort(p1,index.return=TRUE)
+  # p2=tmp$ix
+  # list(d=d,p1=p1,p2=p2)
+
+   g=max(length(unique(z)),length(unique(zprime)))
+    n=length(z)
+    if (max(z)>g){
+      val=sort(unique(z),decreasing = FALSE)
+      for (it in 1:length(val)){
+        if (val[it]!=it){
+          z[z==val[it]]=it
+        }
+      }
+    }
+    zsik=!(zprime%*%t(rep(1,g))-rep(1,n)%*%t(1:g));
+    zik=!(z%*%t(rep(1,g))-rep(1,n)%*%t(1:g));
+    if (g<7){
+      #P<-permute::allPerms(g)
+      P<-permutations(g,g,1:g)
+    }else{
+      #P1<-permute::allPerms(6)
+      P1<-permutations(6,6,1:6)
+      if (g>=7){
+        P=cbind(rep(7,nrow(P1)),P1)
+        for (it in 2:7){
+          P2=matrix(7,nrow=nrow(P1),ncol=7)
+          P2[,-it]=P1
+          P<-rbind(P,P2)
+        }
+        if (g>=8){
+          P1=P
+          P=cbind(rep(8,nrow(P1)),P1)
+          for (it in 2:8){
+            P2=matrix(8,nrow=nrow(P1),ncol=8)
+            P2[,-it]=P1
+            P<-rbind(P,P2)
+          }
+          if (g==9){
+            P1=P
+            P=cbind(rep(9,nrow(P1)),P1)
+            for (it in 2:9){
+              P2=matrix(9,nrow=nrow(P1),ncol=9)
+              P2[,-it]=P1
+              P<-rbind(P,P2)
+            }
+          }
+        }
+      }
+    }
+    d=Inf
+    for (iter in 1:nrow(P)){
+      Val=sum(abs(zik-zsik[,P[iter,]]))/(2*n)
+      if (Val<d){
+        d=Val
+        if (Val==0){
+          break
+        }
+      }
+    }
+    d
+
+
+
+
+
+
+
+
   }
-  d=min(dd)
-  i=which.min(dd)
-  d=d/n1
-  p1=permutation[i,]
-  tmp=sort(p1,index.return=TRUE)
-  p2=tmp$ix
-  list(d=d,p1=p1,p2=p2)}
 
 
-##' CE_LBM function for agreement between coclustering partitions
+##' CE_LBM function for agreement between co-clustering partitions
 ##'
-##' Produce a measure of agreement between two pairs of partitions for coclustering. A value of 1 means a perfect match.
+##' Produce a measure of agreement between two pairs of partitions for co-clustering. A value of 1 means a perfect match.
 ##'
 ##' @param z numeric vector  specifying the class of  rows.
 ##' @param w numeric vector  specifying the class of  columns.
 ##' @param zprime numeric vector  specifying another partition of  rows.
 ##' @param wprime numeric vector  specifying another partition of  columns.
 ##'
-##' @return the value of the index
+##' @return the value of the index. (between 0 and 1). A value of 0 corresponds to a perfect match.
 ##'
 ##' @usage CE_LBM(z,w,zprime,wprime)
 ##' @rdname CE_LBM-proc
 ##' @examples
-##' \donttest{require(bikm1)
+##' \donttest{
 ##' require(bikm1)
 ##' set.seed(42)
 ##' z=floor(runif(4)*2)
 ##' zprime=floor(runif(4)*2)
 ##' w=floor(runif(4)*3)
-##' wprime=floor(runif(4)*2)
+##' wprime=floor(runif(4)*3)
 ##' error=CE_LBM(z,w,zprime,wprime)
 ##' }
 ##' @export CE_LBM
@@ -1257,16 +1323,16 @@ CE_LBM=function(z,w,zprime,wprime){
 
   e1=CE_simple(z,zprime)
   e2=CE_simple(w,wprime)
-  CE=1-e1$d+e2$d-e1$d*e2$d
-  list(CE=CE)
+  CE=e1+e2-e1*e2
+  CE
 }
 
 
 
 
-##' CE_MLBM function for agreement between coclustering partitions in the MBLM
+##' CE_MLBM function for agreement between co-clustering partitions in the MBLM
 ##'
-##' Produce a measure of agreement between two triplets of partitions for coclustering. A value of 1 means a perfect match.
+##' Produce a measure of agreement between two triplets of partitions for co-clustering. A value of 1 means a perfect match.
 ##'
 ##' @param z numeric vector  specifying the class of  rows.
 ##' @param v numeric vector specifying the class of column partitions for the first matrix.
@@ -1274,12 +1340,12 @@ CE_LBM=function(z,w,zprime,wprime){
 ##' @param zprime numeric vector  specifying another partitions of rows.
 ##' @param vprime numeric vector specifying another partition of columns for the first matrix.
 ##' @param wprime numeric vector specifying another partition of columns for the second matrix.
-##' @return a the value of the index
+##' @return the value of the index (between 0 and 1). A value of 0 corresponds to a perfect match.
 ##'
 ##' @usage CE_MLBM(z,v,w,zprime,vprime,wprime)
 ##' @rdname CE_MLBM-proc
 ##' @examples
-##' \donttest{require(bikm1)
+##' \donttest{
 ##' require(bikm1)
 ##' set.seed(42)
 ##' n=200
@@ -1318,17 +1384,17 @@ CE_MLBM=function(z,v,w,zprime,vprime,wprime){
   }
 
 
-  w=cbind(v,w+max(v))
-  wprime=cbind(vprime,wprime+max(wprime))
+  w=c(v,w+max(v))
+  wprime=c(vprime,wprime+max(vprime))
 
-  CE=CE_LBM(z,w,zprime,wprime)$CE
-  list(CE=CE)
+  CE=CE_LBM(z,w,zprime,wprime)
+  CE
 }
 
 
 ##' BinBlocICL_MLBM function  for computation of the ICL criterion in the MLBM
 ##'
-##' Produce a plot object representing the resumed coclustered data-sets.
+##' Produce a plot object representing the resumed co-clustered data-sets.
 ##'
 ##' @param a an hyperparameter for priors on the mixing proportions. By default, a=4.
 ##' @param b an hyperparameter for prior on the Bernoulli parameter. By default, b=1.

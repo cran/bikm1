@@ -21,7 +21,7 @@ BinBlocVisuResum_MLBM(x,y,z,v,w)
 a \pkg{plot} object.
 }
 \description{
-Produce a plot object representing the resumed coclustered data-sets.
+Produce a plot object representing the resumed co-clustered data-sets.
 }
 \examples{
 require(bikm1)

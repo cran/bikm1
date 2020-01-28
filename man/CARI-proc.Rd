@@ -2,7 +2,7 @@
 % Please edit documentation in R/bikm1_LBM_Poisson_functions.R
 \name{CARI}
 \alias{CARI}
-\title{CARI function for agreement between coclustering partitions}
+\title{CARI function for agreement between co-clustering partitions}
 \usage{
 CARI(v,w,vprime,wprime)
 }
@@ -11,19 +11,19 @@ CARI(v,w,vprime,wprime)
 
 \item{w}{numeric vector specifying the class of columns.}
 
-\item{vprime}{numeric vector  specifying another partitions of rows.}
+\item{vprime}{numeric vector  specifying another partition of rows.}
 
 \item{wprime}{numeric vector specifying another partition of columns.}
 }
 \value{
 a list including the arguments:
 
-\code{cari}: value of the index.
+\code{cari}: value of the index. (between 0 and 1). A value of 1 corresponds to a perfect match.
 
 \code{nvw}: contingency table which the index is based on.
 }
 \description{
-Produce a measure of agreement between two pairs of partitions for coclustering. A value of 1 means a perfect match.
+Produce a measure of agreement between two pairs of partitions for co-clustering. A value of 1 means a perfect match.
 }
 \examples{
 \donttest{require(bikm1)
@@ -42,5 +42,5 @@ me$cari
 me$nvw}
 }
 \references{
-Robert and Vasseur. Comparing high dimensional partitions with the Coclustering Adjusted Rand Index, Preprint (2017).
+Robert and Vasseur. Comparing high dimensional partitions with the Co-clustering Adjusted Rand Index, Preprint (2017).
 }

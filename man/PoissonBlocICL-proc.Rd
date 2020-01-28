@@ -25,7 +25,7 @@ PoissonBlocICL(a,alpha,beta,x,v1,w1,normalization)
 a value of the ICL criterion
 }
 \description{
-Produce a value of the ICL criterion for coclustering partitions
+Produce a value of the ICL criterion for co-clustering partitions
 }
 \examples{
 \donttest{require(bikm1)

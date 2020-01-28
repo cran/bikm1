@@ -25,7 +25,7 @@ BinBlocICL_MLBM(a,b,x,y,z1,v1,w1)
 a value of the ICL criterion.
 }
 \description{
-Produce a plot object representing the resumed coclustered data-sets.
+Produce a plot object representing the resumed co-clustered data-sets.
 }
 \examples{
 require(bikm1)

@@ -5,10 +5,10 @@
 \alias{bikm1-package}
 \title{bikm1 package}
 \description{
-This package is designed to cocluster a contingency (resp. binary) matrix, or  double binary matrices in blocks respectively under the (normalized or not) Poisson (resp binary) Latent Block Model and the Multiple Latent Block Model. It enables to automatically select the number of row and column clusters and to compare partition estimations with reference partitions.
+This package is designed to co-cluster a contingency (resp. binary) matrix, or  double binary matrices in blocks respectively under the (normalized or not) Poisson (resp binary) Latent Block Model and the Multiple Latent Block Model. It enables to automatically select the number of row and column clusters and to compare partition estimations with reference partitions.
 }
 \section{Features}{
- Package for the segmentation of the rows and columns inducing a coclustering and automatically select the number of row and column clusters.
+ Package for the segmentation of the rows and columns inducing a co-clustering and automatically select the number of row and column clusters.
 }
 
 \section{Model 1 }{
@@ -40,13 +40,13 @@ with \code{\link{show,BIKM1_MLBM_Binary-method}}, with \code{\link{summary,BIKM1
 \references{
 Keribin, Celeux and Robert, The Latent Block Model: a useful model for high dimensional data. https://hal.inria.fr/hal-01658589/document
 
-  Govaert and Nadif. Coclustering, Wyley (2013).
+  Govaert and Nadif. Co-clustering, Wyley (2013).
 
 Keribin, Brault and Celeux. Estimation and Selection for the Latent Block Model on Categorical Data, Statistics and Computing (2014).
 
-Robert. Classification crois\'ee pour l'analyse de bases de donn\'ees de grandes dimensions de pharmacovigilance. Thesis, Paris Saclay (2017).
+Robert. Classification croisee pour l'analyse de bases de donnees de grandes dimensions de pharmacovigilance. Thesis, Paris Saclay (2017).
 
-Robert and Vasseur. Comparing high dimensional partitions with the Coclustering Adjusted Rand Index, Preprint (2017).
+Robert and Vasseur. Comparing high dimensional partitions with the Co-clustering Adjusted Rand Index, Preprint (2017).
 }
 \author{
 Valerie Robert \email{valerie.robert.math@gmail.com}

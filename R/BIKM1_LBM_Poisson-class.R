@@ -4,25 +4,25 @@
 ##'
 ##' @section Slots: \describe{
 ##'
-##' \item{\code{model_max}: }{the selected model by the procedure with free energy W, theta, conditional probabilities (r_jh, t_kl), iter, empty_cluster, and the selected partitions v and w. }
+##' \item{\code{model_max}: }{The selected model by the procedure with free energy W, theta, conditional probabilities (r_jh, t_kl), iter, empty_cluster, and the selected partitions v and w. }
 ##'
-##' \item{\code{criterion_choice}: }{Character string corresponding to the chosen criterion used for model selection, which can be "ICL" or "BIC".}
+##' \item{\code{criterion_choice}: }{A character string corresponding to the chosen criterion used for model selection, which can be "ICL" or "BIC".}
 ##'
-##' \item{\code{init_choice}: }{Character string corresponding to the chosen initialization strategy used for the procedure, which can be "random" or "Gibbs" or "smallVBayes".}
+##' \item{\code{init_choice}: }{A character string corresponding to the chosen initialization strategy used for the procedure, which can be "random" or "Gibbs" or "smallVBayes".}
 ##'
-##' \item{\code{criterion_tab}: }{Matrix corresponding to the values of the chosen criterion for pairs of numbers of clusters visited by the BIKM1_LBM_Poisson function. The matrix rows design the numbers of row clusters. If a pair is not visited, by default, the value is -Inf.}
+##' \item{\code{criterion_tab}: }{The matrix corresponding to the values of the chosen criterion for pairs of numbers of clusters visited by the BIKM1_LBM_Poisson function. The matrix rows design the numbers of row clusters. If a pair is not visited, by default, the value is -Inf.}
 ##'
 ##'
-##' \item{\code{W_tab}: }{Matrix corresponding to the values of the free energy (minimizer of the loglikelihood in the algorithm) for pairs of numbers of clusters visited by the procedure. The matrix rows design the numbers of row clusters. If a pair is not visited, by default, the value is -Inf.}
+##' \item{\code{W_tab}: }{The matrix corresponding to the values of the free energy (minimizer of the loglikelihood in the algorithm) for pairs of numbers of clusters visited by the procedure. The matrix rows design the numbers of row clusters. If a pair is not visited, by default, the value is -Inf.}
 ##'
 ##'
 ##' \item{\code{criterion_max}: }{Numeric indicating the maximum of the criterion values, calculated on the pairs of numbers of clusters visited by the BIKM1_LBM_Poisson function.}
 ##'
 ##'
-##' \item{\code{lopt}: }{Integer value indicating the number of row clusters selected by the BIKM1_LBM_Poisson function.}
+##' \item{\code{lopt}: }{An Integer value indicating the number of row clusters selected by the BIKM1_LBM_Poisson function.}
 ##'
 ##'
-##'  \item{\code{hopt}: }{Integer value indicating the number of column clusters selected by the BIKM1_LBM_Poisson function.}
+##'  \item{\code{hopt}: }{An integer value indicating the number of column clusters selected by the BIKM1_LBM_Poisson function.}
 ##'
 ##'
 ##' }
@@ -57,7 +57,7 @@
 ##' theta$tau_l=1/l *matrix(1,l,1)
 ##' theta$gamma_hl=matrix(floor(runif(h*l)*20+1),ncol=l)
 ##' data=PoissonBlocRnd(J,K,theta)
-##' res=BIKM1_LBM_Poisson(data$x,3,2,4,init_choice='smallVBayes')
+##' res=BIKM1_LBM_Poisson(data$x,3,3,4,init_choice='smallVBayes')
 
 setClass(
   Class="BIKM1_LBM_Poisson",
@@ -96,7 +96,7 @@ setClass(
 ##' theta$tau_l=1/l *matrix(1,l,1)
 ##' theta$gamma_hl=matrix(c(1, 6,4, 1, 7, 1),ncol=2)
 ##' data=PoissonBlocRnd(J,K,theta)
-##' res=BIKM1_LBM_Poisson(data,3,2,4,init_choice='random')
+##' res=BIKM1_LBM_Poisson(data$x,3,2,4,init_choice='random')
 ##' print(res)}
 ##'
 
@@ -224,7 +224,7 @@ setMethod("summary","BIKM1_LBM_Poisson",
 ##' theta$rho_h=1/h *matrix(1,h,1)
 ##' theta$tau_l=1/l *matrix(1,l,1)
 ##' theta$gamma_hl=matrix(c(1, 6,4, 1, 7, 1),ncol=2)
-##' data=PoissonBlocRnd(j,K,theta)
+##' data=PoissonBlocRnd(J,K,theta)
 ##' res=BIKM1_LBM_Poisson(data$x,3,3,4,init_choice='random')
 ##' plot(res,data)}
 
@@ -236,7 +236,15 @@ setMethod(
   signature="BIKM1_LBM_Poisson",
   definition=function(x,y,...){
 
+    oldpar=par(mfrow=c(1,2),oma=c(1,1,1,1))
+    on.exit(par(oldpar))
+    PoissonBlocVisu(y$x,rep(1,dim(y$x)[1]),rep(1,dim(y$x)[2]))
+    PoissonBlocVisu(y$x,x@model_max$v,x@model_max$w)
+    mtext('Initial partitions',side = 3,outer = TRUE,adj = 0.1,cex.lab=0.3,
+          cex.main=0.3)
 
+    mtext('Estimated partitions',side = 3,outer = TRUE,adj = 0.9,cex.lab=0.3,
+          cex.main=0.3)
     #refgraph=list(ask=par()$ask,
                   # mgp=par()$mgp,
                   # oma=par()$oma,
@@ -251,6 +259,7 @@ setMethod(
     pos[1,1]=x@criterion_tab[h,l]
     pos[1,2]=h
     pos[1,3]=l
+    if (Niter>1){
     for (iter in 2:Niter){
       if (x@criterion_tab[h+1,l]>-Inf){
         h=h+1
@@ -261,19 +270,17 @@ setMethod(
       pos[iter,2]=h
       pos[iter,3]=l
     }
-    dev.new(width=20)
-    oldpar<-par(mfrow=c(1,2),oma=c(0,0,3,0))
-    on.exit(par(oldpar))
+    }
+    #dev.new(width=30)
+    #oldpar<-par(mfrow=c(1,2),oma=c(2,2,2,2))
+    #on.exit(par(oldpar))
     #par(layout(c(1,2,rep(c(3,4),5))))
-    PoissonBlocVisu(y$x,rep(1,dim(y$x)[1]),rep(1,dim(y$x)[2]))
-    mtext('Initial partitions',side = 3,outer = TRUE,adj = 0.1,cex.lab=0.3,
-          cex.main=0.3)
-    PoissonBlocVisu(y$x,x@model_max$v,x@model_max$w)
-    mtext('Estimated partitions',side = 3,outer = TRUE,adj = 0.9,cex.lab=0.3,
-          cex.main=0.3)
 
 
-    # dev.new(width=14)
+
+
+
+
     # par(mfrow=c(1,2),oma=c(0,0,3,0))
     # #par(layout(c(1,2,rep(c(3,4),5))))
     # PoissonBlocVisuResum(y,rep(1,dim(y$x)[1]),rep(1,dim(y$x)[2]))
@@ -284,7 +291,8 @@ setMethod(
     #       cex.main=0.3)
 
 
-    dev.new(width=20)
+    dev.new(width=14)
+    if (Niter>1){
     #library(grid)
     grid.newpage()
     pushViewport(viewport(layout = grid.layout(1,2)))
@@ -312,6 +320,8 @@ setMethod(
     print(p2, vp = viewport(layout.pos.row = 1,
                             layout.pos.col = 2))
 
+    }
+
 
     # par(mfrow = c(1,2))
     # plot(pos[,2],pos[,1],type='b', xlab='Number of row clusters',ylab='Criterion values')
@@ -320,7 +330,7 @@ setMethod(
     # title(main="Evolution of Criterion values",outer=TRUE,line=-2)
 
 
-    dev.new(width=20)
+
     di=dim(x@model_max$r_jh)[1]
     dit=dim(x@model_max$t_kl)[1]
     c=matrix(0,1,di)
@@ -375,8 +385,9 @@ setMethod(
       }
     }
 
-
+    dev.new(width=14)
     grid.newpage()
+
     pushViewport(viewport(layout = grid.layout(1,2)))
 
     dat=data.frame(melt(matbox_ligne))
@@ -384,8 +395,8 @@ setMethod(
     names(dat)=c("y","x")
     dat$x=as.factor(dat$x)
     p1<-ggplot(dat,aes(x=x,y=y,fill=x)) + geom_boxplot()+
-      labs(x="row cluster",y="",
-           title="Conditional posterior for each row cluster")+
+      labs(x="row cluster",y="Conditionnal posterior",
+           title="")+
       theme(legend.position='none')+ylim(0,1)
     print(p1, vp = viewport(layout.pos.row = 1,
                             layout.pos.col = 1))
@@ -393,12 +404,16 @@ setMethod(
     names(dat)=c("y","x")
     dat$x=as.factor(dat$x)
     p2<-ggplot(dat,aes(x=x,y=y,fill=x)) + geom_boxplot()+
-      labs(x="column cluster",y="",
-           title="Conditional posterior for each column cluster")+
+      labs(x="column cluster",y="Conditionnal posterior",
+           title=" ")+
       theme(legend.position='none')+ylim(0,1)
+    #grid.arrange(p1,p2, ncol=2, nrow = 1)
     print(p2, vp = viewport(layout.pos.row = 1,
                             layout.pos.col = 2))
+
+
     #par(refgraph)
+
   }
 )
 

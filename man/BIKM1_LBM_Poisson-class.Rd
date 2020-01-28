@@ -10,25 +10,25 @@ Class of object returned by the \code{\link{BIKM1_LBM_Poisson}} function.
 \section{Slots}{
  \describe{
 
-\item{\code{model_max}: }{the selected model by the procedure with free energy W, theta, conditional probabilities (r_jh, t_kl), iter, empty_cluster, and the selected partitions v and w. }
+\item{\code{model_max}: }{The selected model by the procedure with free energy W, theta, conditional probabilities (r_jh, t_kl), iter, empty_cluster, and the selected partitions v and w. }
 
-\item{\code{criterion_choice}: }{Character string corresponding to the chosen criterion used for model selection, which can be "ICL" or "BIC".}
+\item{\code{criterion_choice}: }{A character string corresponding to the chosen criterion used for model selection, which can be "ICL" or "BIC".}
 
-\item{\code{init_choice}: }{Character string corresponding to the chosen initialization strategy used for the procedure, which can be "random" or "Gibbs" or "smallVBayes".}
+\item{\code{init_choice}: }{A character string corresponding to the chosen initialization strategy used for the procedure, which can be "random" or "Gibbs" or "smallVBayes".}
 
-\item{\code{criterion_tab}: }{Matrix corresponding to the values of the chosen criterion for pairs of numbers of clusters visited by the BIKM1_LBM_Poisson function. The matrix rows design the numbers of row clusters. If a pair is not visited, by default, the value is -Inf.}
+\item{\code{criterion_tab}: }{The matrix corresponding to the values of the chosen criterion for pairs of numbers of clusters visited by the BIKM1_LBM_Poisson function. The matrix rows design the numbers of row clusters. If a pair is not visited, by default, the value is -Inf.}
 
 
-\item{\code{W_tab}: }{Matrix corresponding to the values of the free energy (minimizer of the loglikelihood in the algorithm) for pairs of numbers of clusters visited by the procedure. The matrix rows design the numbers of row clusters. If a pair is not visited, by default, the value is -Inf.}
+\item{\code{W_tab}: }{The matrix corresponding to the values of the free energy (minimizer of the loglikelihood in the algorithm) for pairs of numbers of clusters visited by the procedure. The matrix rows design the numbers of row clusters. If a pair is not visited, by default, the value is -Inf.}
 
 
 \item{\code{criterion_max}: }{Numeric indicating the maximum of the criterion values, calculated on the pairs of numbers of clusters visited by the BIKM1_LBM_Poisson function.}
 
 
-\item{\code{lopt}: }{Integer value indicating the number of row clusters selected by the BIKM1_LBM_Poisson function.}
+\item{\code{lopt}: }{An Integer value indicating the number of row clusters selected by the BIKM1_LBM_Poisson function.}
 
 
- \item{\code{hopt}: }{Integer value indicating the number of column clusters selected by the BIKM1_LBM_Poisson function.}
+ \item{\code{hopt}: }{An integer value indicating the number of column clusters selected by the BIKM1_LBM_Poisson function.}
 
 
 }
@@ -47,6 +47,6 @@ theta$rho_h=1/h *matrix(1,h,1)
 theta$tau_l=1/l *matrix(1,l,1)
 theta$gamma_hl=matrix(floor(runif(h*l)*20+1),ncol=l)
 data=PoissonBlocRnd(J,K,theta)
-res=BIKM1_LBM_Poisson(data$x,3,2,4,init_choice='smallVBayes')
+res=BIKM1_LBM_Poisson(data$x,3,3,4,init_choice='smallVBayes')
 }
 \keyword{class}

@@ -96,7 +96,7 @@ userparam=list(z=data$xrow,v=data$xcolx,w=data$xcoly))
 
 }
 \references{
-Govaert and Nadif. Coclustering, Wyley (2013).
+Govaert and Nadif. Co-clustering, Wyley (2013).
 
 Keribin, Brault and Celeux. Estimation and Selection for the Latent Block Model on Categorical Data, Statistics and Computing (2014).
 

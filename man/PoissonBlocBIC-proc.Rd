@@ -30,7 +30,7 @@ PoissonBlocBIC(a,alpha,beta,v1,w1,x,res,normalization)
 a value of the BIC criterion
 }
 \description{
-Produce a value of the BIC criterion for coclustering partitions
+Produce a value of the BIC criterion for co-clustering partitions
 }
 \examples{
 \donttest{require(bikm1)
@@ -44,5 +44,5 @@ theta$tau_l=1/l*matrix(1,l,1)
 theta$gamma_hl=matrix(c(1, 6,4, 1, 7, 1),ncol=2)
 data=PoissonBlocRnd(J,K,theta)
 res=BIKM1_LBM_Poisson(data$x,3,3,4,init_choice='smallVBayes')
-bic=PoissonBlocBIC(res@model_max$v,res@model_max$w,data$x,res,normalization=TRUE)}
+bic=PoissonBlocBIC(v1=res@model_max$v,w1=res@model_max$w,x=data$x,res=res,normalization=TRUE)}
 }

@@ -27,14 +27,14 @@ By default, Gstart=2.}
 \item{Hstart}{a positive integer to initialize the procedure with number of column clusters.
 By default, Hstart=2.}
 
-\item{init_choice}{character string corresponding to the chosen initialization strategy used for the procedure, which can be "random" or "smallVBayes" or "user".
+\item{init_choice}{a character string corresponding to the chosen initialization strategy used for the procedure, which can be "random" or "smallVBayes" or "user".
 By default, init_choice="smallVBayes".}
 
-\item{userparam}{In the case where init_choice is "user", a list containing partitions z and w. By default userparam=NULL.}
+\item{userparam}{in the case where init_choice is "user", a list containing partitions z and w. By default userparam=NULL.}
 
 \item{ntry}{a positive integer corresponding to the number of times which is launched the small VBayes or random initialization strategy. By default ntry=100.}
 
-\item{criterion_choice}{Character string corresponding to the chosen criterion used for model selection, which can be "ICL" as for now.
+\item{criterion_choice}{a character string corresponding to the chosen criterion used for model selection, which can be "ICL" as for now.
 By default, criterion_choice="ICL".}
 
 \item{mc.cores}{a positive integer corresponding to the available number of cores for parallel computing.
@@ -51,11 +51,11 @@ a BIKM1_LBM_Binary object including
 
 \code{init_choice}: the chosen init choice
 
-\code{criterion tab}: matrix containing the criterion values for each selected number of row and column
+\code{criterion tab}:  the matrix containing the criterion values for each selected number of row and column
 
-\code{W_tab}: matrix containing the free energy values for each selected number of row and column
+\code{W_tab}: the matrix containing the free energy values for each selected number of row and column
 
-\code{criterion_max}: maximum of the criterion values
+\code{criterion_max}: the maximum of the criterion values
 
 \code{gopt}: the selected number of rows
 
@@ -82,7 +82,7 @@ init_choice='user',userparam=list(z=data$xrow,v=data$xcol))
 
 }
 \references{
-Govaert and Nadif. Coclustering, Wyley (2013).
+Govaert and Nadif. Co-clustering, Wyley (2013).
 
 Keribin, Brault and Celeux. Estimation and Selection for the Latent Block Model on Categorical Data, Statistics and Computing (2014).
 

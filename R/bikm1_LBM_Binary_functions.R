@@ -14,17 +14,17 @@
 ##' By default, Gstart=2.
 ##' @param Hstart a positive integer to initialize the procedure with number of column clusters.
 ##' By default, Hstart=2.
-##' @param init_choice character string corresponding to the chosen initialization strategy used for the procedure, which can be "random" or "smallVBayes" or "user".
+##' @param init_choice a character string corresponding to the chosen initialization strategy used for the procedure, which can be "random" or "smallVBayes" or "user".
 ##' By default, init_choice="smallVBayes".
-##' @param userparam In the case where init_choice is "user", a list containing partitions z and w. By default userparam=NULL.
+##' @param userparam in the case where init_choice is "user", a list containing partitions z and w. By default userparam=NULL.
 ##' @param ntry a positive integer corresponding to the number of times which is launched the small VBayes or random initialization strategy. By default ntry=100.
-##' @param criterion_choice Character string corresponding to the chosen criterion used for model selection, which can be "ICL" as for now.
+##' @param criterion_choice a character string corresponding to the chosen criterion used for model selection, which can be "ICL" as for now.
 ##' By default, criterion_choice="ICL".
 ##' @param mc.cores a positive integer corresponding to the available number of cores for parallel computing.
 ##' By default, mc.cores=1.
 ##' @param verbose logical. To display each step and the result. By default verbose=TRUE.
 ##' @rdname BIKM1_LBM_Binary-proc
-##' @references Govaert and Nadif. Coclustering, Wyley (2013).
+##' @references Govaert and Nadif. Co-clustering, Wyley (2013).
 ##'
 ##' Keribin, Brault and Celeux. Estimation and Selection for the Latent Block Model on Categorical Data, Statistics and Computing (2014).
 ##'
@@ -41,11 +41,11 @@
 ##'
 ##' \code{init_choice}: the chosen init choice
 ##'
-##' \code{criterion tab}: matrix containing the criterion values for each selected number of row and column
+##' \code{criterion tab}:  the matrix containing the criterion values for each selected number of row and column
 ##'
-##' \code{W_tab}: matrix containing the free energy values for each selected number of row and column
+##' \code{W_tab}: the matrix containing the free energy values for each selected number of row and column
 ##'
-##' \code{criterion_max}: maximum of the criterion values
+##' \code{criterion_max}: the maximum of the criterion values
 ##'
 ##' \code{gopt}: the selected number of rows
 ##'
@@ -717,14 +717,14 @@ BIKM1_LBM_Binary=function(x,Gmax,Hmax,a=4,b=1,Gstart=2,Hstart=2,init_choice='sma
 ##'
 ##' @examples
 ##' require(bikm1)
-##' ##' set.seed(42)
-  ##' n=200
-  ##' J=120
-  ##' g=3
-  ##' h=2
-  ##' theta=list()
-  ##' theta$pi_g=1/g *matrix(1,g,1)
-  ##' theta$rho_h=1/h *matrix(1,h,1)
+##' set.seed(42)
+##' n=200
+##' J=120
+##' g=3
+##' h=2
+##' theta=list()
+##' theta$pi_g=1/g *matrix(1,g,1)
+##' theta$rho_h=1/h *matrix(1,h,1)
 ##'theta$alpha_gh=matrix(runif(6),ncol=h)
 ##' data=BinBlocRnd_LBM(n,J,theta)
 ##'
@@ -776,7 +776,7 @@ BinBlocRnd_LBM =function (n,J,theta){
 
 ##' BinBlocVisu_LBM function for visualization of binary matrix datasets
 ##'
-##' Produce a plot object representing the coclustered data-sets.
+##' Produce a plot object representing the co-clustered data-sets.
 ##'
 ##' @param x data matrix of observations.
 ##'
@@ -797,9 +797,9 @@ BinBlocRnd_LBM =function (n,J,theta){
 ##' theta=list()
 ##' theta$pi_g=1/g *matrix(1,g,1)
 ##' theta$rho_h=1/h *matrix(1,h,1)
-##'theta$alpha_gh=matrix(runif(6),ncol=h)
+##' theta$alpha_gh=matrix(runif(6),ncol=h)
 ##' data=BinBlocRnd_LBM(n,J,theta)
-##' BinBlocVisu_LBM(data$x, data$xrow,data$xcol)
+##' BinBlocVisu_LBM(data$x,data$xrow,data$xcol)
 ##' @export BinBlocVisu_LBM
 
 BinBlocVisu_LBM=function(x,z,v){
@@ -837,7 +837,7 @@ BinBlocVisu_LBM=function(x,z,v){
 
 ##' BinBlocVisuResum_LBM function  for visualization of binary matrix data-sets
 ##'
-##' Produce a plot object representing the resumed coclustered data-sets.
+##' Produce a plot object representing the resumed co-clustered data-sets.
 ##'
 ##' @param x binary matrix of observations.
 ##'
@@ -859,7 +859,7 @@ BinBlocVisu_LBM=function(x,z,v){
 ##' theta$rho_h=1/h *matrix(1,h,1)
 ##'theta$alpha_gh=matrix(runif(6),ncol=h)
 ##' data=BinBlocRnd_LBM(n,J,theta)
-##' BinBlocVisuResum_LBM(data$x, data$xrow,data$xcol)
+##' BinBlocVisuResum_LBM(data$x,data$xrow,data$xcol)
 ##' @export BinBlocVisuResum_LBM
 
 

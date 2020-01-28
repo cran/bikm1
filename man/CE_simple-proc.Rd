@@ -12,13 +12,13 @@ CE_simple(z,zprime)
 \item{zprime}{numeric vector  specifying the class of  rows.}
 }
 \value{
-the value of the index
+the value of the index.(between 0 and 1). A value of 0 corresponds to a perfect match.
 }
 \description{
 Produce a measure of agreement between two  partitions for clustering. A value of 1 means a perfect match.
 }
 \examples{
-\donttest{require(bikm1)
+\donttest{
 require(bikm1)
 set.seed(42)
 z=floor(runif(4)*3)

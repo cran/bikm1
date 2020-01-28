@@ -2,7 +2,7 @@
 % Please edit documentation in R/bikm1_MLBM_Binary_functions.R
 \name{CE_LBM}
 \alias{CE_LBM}
-\title{CE_LBM function for agreement between coclustering partitions}
+\title{CE_LBM function for agreement between co-clustering partitions}
 \usage{
 CE_LBM(z,w,zprime,wprime)
 }
@@ -16,19 +16,19 @@ CE_LBM(z,w,zprime,wprime)
 \item{wprime}{numeric vector  specifying another partition of  columns.}
 }
 \value{
-the value of the index
+the value of the index. (between 0 and 1). A value of 0 corresponds to a perfect match.
 }
 \description{
-Produce a measure of agreement between two pairs of partitions for coclustering. A value of 1 means a perfect match.
+Produce a measure of agreement between two pairs of partitions for co-clustering. A value of 1 means a perfect match.
 }
 \examples{
-\donttest{require(bikm1)
+\donttest{
 require(bikm1)
 set.seed(42)
 z=floor(runif(4)*2)
 zprime=floor(runif(4)*2)
 w=floor(runif(4)*3)
-wprime=floor(runif(4)*2)
+wprime=floor(runif(4)*3)
 error=CE_LBM(z,w,zprime,wprime)
 }
 }

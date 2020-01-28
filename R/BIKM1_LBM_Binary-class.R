@@ -4,25 +4,25 @@
 ##'
 ##' @section Slots: \describe{
 ##'
-##' \item{\code{model_max}: }{the selected model by the procedure with free energy W, theta, conditional probabilities (s_ig, r_jh), iter, empty_cluster, and the selected partitions z and v.}
+##' \item{\code{model_max}: }{The selected model by the procedure with free energy W, theta, conditional probabilities (s_ig, r_jh), iter, empty_cluster, and the selected partitions z and v.}
 ##'
-##' \item{\code{criterion_choice}: }{Character string corresponding to the chosen criterion used for model selection, which can be "ICL" or "BIC".}
+##' \item{\code{criterion_choice}: }{A character string corresponding to the chosen criterion used for model selection, which can be "ICL" or "BIC".}
 ##'
-##' \item{\code{init_choice}: }{Character string corresponding to the chosen initialization strategy used for the procedure, which can be "random" or "Gibbs" or "smallVBayes".}
+##' \item{\code{init_choice}: }{A character string corresponding to the chosen initialization strategy used for the procedure, which can be "random" or "Gibbs" or "smallVBayes".}
 ##'
-##' \item{\code{criterion_tab}: }{Matrix corresponding to the values of the chosen criterion for pairs of numbers of clusters visited by the BIKM1_LBM_Binary function. The matrix rows design the numbers of row clusters. If a pair is not visited, by default, the value is -Inf.}
+##' \item{\code{criterion_tab}: }{The matrix corresponding to the values of the chosen criterion for pairs of numbers of clusters visited by the BIKM1_LBM_Binary function. The matrix rows design the numbers of row clusters. If a pair is not visited, by default, the value is -Inf.}
 ##'
 ##'
-##' \item{\code{W_tab}: }{Matrix corresponding to the values of the free energy (minimizer of the loglikelihood in the algorithm) for pairs of numbers of clusters visited by the procedure. The matrix rows design the numbers of row clusters. If a pair is not visited, by default, the value is -Inf.}
+##' \item{\code{W_tab}: }{The matrix corresponding to the values of the free energy (minimizer of the loglikelihood in the algorithm) for pairs of numbers of clusters visited by the procedure. The matrix rows design the numbers of row clusters. If a pair is not visited, by default, the value is -Inf.}
 ##'
 ##'
 ##' \item{\code{criterion_max}: }{Numeric indicating the maximum of the criterion values, calculated on the pairs of numbers of clusters visited by the BIKM1_LBM_Binary function.}
 ##'
 ##'
-##' \item{\code{gopt}: }{Integer value indicating the number of row clusters selected by the BIKM1_LBM_Binary function.}
+##' \item{\code{gopt}: }{An integer value indicating the number of row clusters selected by the BIKM1_LBM_Binary function.}
 ##'
 ##'
-##'  \item{\code{hopt}: }{Integer value indicating the number of column clusters selected by the BIKM1_LBM_Binary function.}
+##'  \item{\code{hopt}: }{An integer value indicating the number of column clusters selected by the BIKM1_LBM_Binary function.}
 ##'
 ##'
 ##' }
@@ -55,7 +55,7 @@
 
 ##'theta$alpha_gh=matrix(runif(6),ncol=h)
 ##' data=BinBlocRnd_LBM(n,J,theta)
-##' res=BIKM1_LBM_Binary(data$x,3,2,a=4,init_choice='smallVBayes')
+##' res=BIKM1_LBM_Binary(data$x,3,3,a=4,init_choice='smallVBayes')
 
 setClass(
   Class="BIKM1_LBM_Binary",
@@ -127,7 +127,7 @@ setMethod("print","BIKM1_LBM_Binary",
 ##' theta=list()
 ##' theta$pi_g=1/g *matrix(1,g,1)
 ##' theta$rho_h=1/h *matrix(1,h,1)
-##'theta$alpha_gh=matrix(runif(6),ncol=h)
+##' theta$alpha_gh=matrix(runif(6),ncol=h)
 ##' data=BinBlocRnd_LBM(n,J,theta)
 ##' res=BIKM1_LBM_Binary(data$x,4,4,4,init_choice='random')
 ##' show(res)}
@@ -166,7 +166,7 @@ setMethod("show","BIKM1_LBM_Binary",
 ##' theta=list()
 ##' theta$pi_g=1/g *matrix(1,g,1)
 ##' theta$rho_h=1/h *matrix(1,h,1)
-##'theta$alpha_gh=matrix(runif(6),ncol=h)
+##' theta$alpha_gh=matrix(runif(6),ncol=h)
 ##' data=BinBlocRnd_LBM(n,J,theta)
 ##' res=BIKM1_LBM_Binary(data$x,3,2,4,init_choice='random')
 ##' summary(res)}
@@ -214,17 +214,17 @@ setMethod("summary","BIKM1_LBM_Binary",
 ##' @aliases plot,BIKM1_LBM_Binary-method
 ##' @examples
 ##' \donttest{require(bikm1)
-##'  g=5
+##' g=5
 ##' h=3
 ##' theta=list()
 ##' theta$pi_g=t(1/g*rep(1,g))
-##'theta$rho_h=t(1/h*rep(1,h))
+##' theta$rho_h=t(1/h*rep(1,h))
 ##' eps=0.1
 ##' theta$alpha_gh=matrix(c(1-eps,eps  ,eps  ,
 ##'                        eps  ,1-eps,eps  ,
 ##'                        eps  ,1-eps,1-eps,
 ##'                        1-eps,1-eps,eps  ,
-##'                        eps  ,eps  ,eps   ),ncol=m,byrow=TRUE)
+##'                        eps  ,eps  ,eps   ),ncol=h,byrow=TRUE)
 ##' n=250
 ##' J=150
 ##' data=BinBlocRnd_LBM(n,J,theta)
@@ -232,7 +232,7 @@ setMethod("summary","BIKM1_LBM_Binary",
 ##' res=BIKM1_LBM_Binary(data$x,8,5,4,init_choice='smallVBayes')
 ##' BinBlocVisu_LBM(data$x,res@model_max$z,res@model_max$v)
 ##' e=CARI(data$xrow,data$xcol,res@model_max$z,res@model_max$v)
-##' plot(res,data$x)}
+##' plot(res,data)}
 
 
 
@@ -249,6 +249,18 @@ setMethod(
     #               xaxs=par()$xaxs,
     #               mfrow=par()$mfrow,
     #               cex.axis=par()$cex.axis)
+
+    oldpar=par(mfrow=c(1,2),oma=c(1,1,1,1))
+    on.exit(par(oldpar))
+    #par(layout(c(1,2,rep(c(3,4),5))))
+    BinBlocVisu_LBM(y$x,rep(1,dim(y$x)[1]),rep(1,dim(y$x)[2]))
+    BinBlocVisu_LBM(y$x,x@model_max$z,x@model_max$v)
+
+    mtext('Initial partitions',side = 3,outer = TRUE,adj = 0.1)
+    mtext('Estimated partitions',side = 3,outer = TRUE,adj = 0.9)
+
+
+
 
     Niter=sum(sum(x@criterion_tab>-Inf))
     pos=matrix(0,Niter,3)
@@ -270,25 +282,22 @@ setMethod(
       pos[iter,3]=h
     }
     }
-     dev.new(width=20)
-    oldpar=par(mfrow=c(1,2),oma=c(0,0,3,0))
-    on.exit(par(oldpar))
-    #par(layout(c(1,2,rep(c(3,4),5))))
-    BinBlocVisu_LBM(y$x,rep(1,dim(y$x)[1]),rep(1,dim(y$x)[2]))
-    mtext('Initial partitions',side = 3,outer = TRUE,adj = 0.1)
-    BinBlocVisu_LBM(y$x,x@model_max$z,x@model_max$v)
-    mtext('Estimated partitions',side = 3,outer = TRUE,adj = 0.9)
+    #dev.new(width=20)
 
-    # dev.new(width=14)
+
+    # dev.new(width=20)
     # par(mfrow=c(1,2),oma=c(0,0,3,0))
     # #par(layout(c(1,2,rep(c(3,4),5))))
-    # BinBlocVisuResum_LBM(y,rep(1,dim(y$x)[1]),rep(1,dim(y$x)[2]))
+    # BinBlocVisuResum_LBM(y$x,rep(1,dim(y$x)[1]),rep(1,dim(y$x)[2]))
     # mtext('Reorganized data matrix with initial partitions',side = 3,outer = TRUE,adj = 0.1)
-    # BinBlocVisuResum_LBM(y,x@model_max$z,x@model_max$w)
+    # BinBlocVisuResum_LBM(y$x,x@model_max$z,x@model_max$w)
     # mtext('Reorganized data matrix with estimated partitions',side = 3,outer = TRUE,adj = 0.9)
 
 
     dev.new(width=20)
+    oldpar=par(mfrow=c(1,2),oma=c(3,3,3,3))
+    on.exit(par(oldpar))
+    if (Niter>1){
     #library(grid)
     grid.newpage()
     pushViewport(viewport(layout = grid.layout(1,2)))
@@ -308,7 +317,7 @@ setMethod(
       labs(x="Number of column clusters",y="Criterion values")
     # #
     print(p2, vp = viewport(layout.pos.row = 1,
-                            layout.pos.col = 2))
+                            layout.pos.col = 2))}
     # #
     # #
     # par(mfrow = c(1,2))
@@ -318,7 +327,11 @@ setMethod(
     # title(main="Evolution of Criterion values",outer=TRUE,line=-2)
     # #
 
+
+
     dev.new(width=20)
+    oldpar=par(mfrow=c(1,2),oma=c(3,3,3,3))
+    on.exit(par(oldpar))
     di=dim(x@model_max$s_ig)[1]
     dit=dim(x@model_max$r_jh)[1]
     c=matrix(0,1,di)
@@ -378,7 +391,7 @@ setMethod(
 
 
 
-    grid.newpage()
+    #grid.newpage()
     pushViewport(viewport(layout = grid.layout(1,2)))
 
     dat=data.frame(melt(matbox_ligne))
@@ -386,8 +399,8 @@ setMethod(
     names(dat)=c("y","x")
     dat$x=as.factor(dat$x)
     p1<-ggplot(dat,aes(x=x,y=y,fill=x)) + geom_boxplot()+
-      labs(x="row cluster",y="",
-           title="Conditional posterior for each row cluster")+
+      labs(x="row cluster",y="Conditionnal posterior",
+           title="")+
       theme(legend.position='none')+ylim(0,1)
     print(p1, vp = viewport(layout.pos.row = 1,
                             layout.pos.col = 1))
@@ -395,13 +408,15 @@ setMethod(
     names(dat)=c("y","x")
     dat$x=as.factor(dat$x)
     p2<-ggplot(dat,aes(x=x,y=y,fill=x)) + geom_boxplot()+
-      labs(x="column cluster ",y="",
-           title="Conditional posterior for each column cluster ")+
+      labs(x="column cluster ",y="conditionnal posterior",
+           title=" ")+
       theme(legend.position='none')+ylim(0,1)
     print(p2, vp = viewport(layout.pos.row = 1,
                             layout.pos.col = 2))
-
+    #dev.new(width=20)
     #par(refgraph)
+
+
   }
 )
 
