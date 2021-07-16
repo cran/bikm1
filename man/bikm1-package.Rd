@@ -46,7 +46,7 @@ Keribin, Brault and Celeux. Estimation and Selection for the Latent Block Model 
 
 Robert. Classification croisee pour l'analyse de bases de donnees de grandes dimensions de pharmacovigilance. Thesis, Paris Saclay (2017).
 
-Robert and Vasseur. Comparing high dimensional partitions with the Co-clustering Adjusted Rand Index, Preprint (2017).
+Robert, Vasseur and Brault. Comparing high dimensional partitions with the Co-clustering Adjusted Rand Index, Journal of Classification, 38(1), 158-186 (2021).
 }
 \author{
 Valerie Robert \email{valerie.robert.math@gmail.com}

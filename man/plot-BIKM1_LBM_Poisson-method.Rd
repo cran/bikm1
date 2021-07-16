@@ -16,7 +16,7 @@
 \item{...}{in the plot method, additional parameters (ignored)}
 }
 \value{
-Two \pkg{plot} and two \pkg{ggplot2} object.
+Two \pkg{plot}s (initial matrix and block estimation) and two \pkg{ggplot2} objects (conditional posterior in each cluster and the graph of chosen criterion values).
 }
 \description{
 Produce respectively one plot of two-dimensional segmentation of a \code{BIKM1_LBM_Poisson} fit, an evolution of the criterion as a function of the numbers of rows and columns, and a boxplot of conditional posteriors for each row and column cluster.

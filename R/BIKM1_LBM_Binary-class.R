@@ -207,8 +207,8 @@ setMethod("summary","BIKM1_LBM_Binary",
 ##'
 ##' @param ... in the plot method, additional parameters (ignored)
 ##'
-##' @return One \pkg{plot} and three \pkg{ggplot2} objects.
-##'
+##' @return One \pkg{plot} (initial and estimated partitions) and three \pkg{ggplot2} objects (conditional posterior in each cluster for each matrix and the graph
+##' of chosen criterion values.
 ##' @export plot
 ##'
 ##' @aliases plot,BIKM1_LBM_Binary-method
@@ -220,11 +220,8 @@ setMethod("summary","BIKM1_LBM_Binary",
 ##' theta$pi_g=t(1/g*rep(1,g))
 ##' theta$rho_h=t(1/h*rep(1,h))
 ##' eps=0.1
-##' theta$alpha_gh=matrix(c(1-eps,eps  ,eps  ,
-##'                        eps  ,1-eps,eps  ,
-##'                        eps  ,1-eps,1-eps,
-##'                        1-eps,1-eps,eps  ,
-##'                        eps  ,eps  ,eps   ),ncol=h,byrow=TRUE)
+##' theta$alpha_gh=matrix(c(1-eps,eps,eps,eps,1-eps,eps,eps,1-eps,1-eps,
+##' 1-eps,1-eps,eps,eps,eps,eps),ncol=h,byrow=TRUE)
 ##' n=250
 ##' J=150
 ##' data=BinBlocRnd_LBM(n,J,theta)

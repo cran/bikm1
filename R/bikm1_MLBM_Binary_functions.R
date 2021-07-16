@@ -945,7 +945,7 @@ BIKM1_MLBM_Binary=function(x,y,Gmax,Hmax,Lmax,a=4,b=1,Gstart=2,Hstart=2,Lstart=2
 ##'
 ##' @examples
 ##' require(bikm1)
-##'  set.seed(42)
+##' set.seed(42)
   ##' n=200
   ##' J=120
   ##' K=120
@@ -1159,32 +1159,31 @@ BinBlocVisuResum_MLBM=function(x,y,z,v,w){
 ##'
 ##' Produce a measure of agreement between two  partitions for clustering. A value of 1 means a perfect match.
 ##'
-##' @param z numeric vector  specifying the class of  rows.
-##' @param zprime numeric vector  specifying the class of  rows.
-##'
-##' @return the value of the index.(between 0 and 1). A value of 0 corresponds to a perfect match.
-##'
-##' @usage CE_simple(z,zprime)
+##' @param v numeric vector  specifying the class of  rows.
+##' @param vprime numeric vector  specifying the class of  rows.
+##' @return the value of the index.
+##' @usage CE_simple(v,vprime)
 ##' @rdname CE_simple-proc
 ##' @examples
 ##' \donttest{
 ##' require(bikm1)
 ##' set.seed(42)
-##' z=floor(runif(4)*3)
-##' zprime=floor(runif(4)*3)
-##' error=CE_simple(z,zprime)
+##' v=floor(runif(4)*3)
+##' vprime=floor(runif(4)*3)
+##' error=CE_simple(v,vprime)
+##' error
 ##' }
 ##' @export CE_simple
 
 
 
-CE_simple=function(z,zprime){
+CE_simple=function(v,vprime){
   #PartDist returns the distance between the two partitions.
   #  This distance is computed with the best arrangement.
   #
   #Inputs:
-  # z  : 1st partition
-  # zprime  : 2nd partition
+  # v  : 1st partition
+  # vprime  : 2nd partition
   #Outputs:
   # d  :  distance
   # p1 :  best permutation
@@ -1216,18 +1215,18 @@ CE_simple=function(z,zprime){
   # p2=tmp$ix
   # list(d=d,p1=p1,p2=p2)
 
-   g=max(length(unique(z)),length(unique(zprime)))
-    n=length(z)
-    if (max(z)>g){
-      val=sort(unique(z),decreasing = FALSE)
+   g=max(length(unique(v)),length(unique(vprime)))
+    n=length(v)
+    if (max(v)>g){
+      val=sort(unique(v),decreasing = FALSE)
       for (it in 1:length(val)){
         if (val[it]!=it){
-          z[z==val[it]]=it
+          v[v==val[it]]=it
         }
       }
     }
-    zsik=!(zprime%*%t(rep(1,g))-rep(1,n)%*%t(1:g));
-    zik=!(z%*%t(rep(1,g))-rep(1,n)%*%t(1:g));
+    vsik=!(vprime%*%t(rep(1,g))-rep(1,n)%*%t(1:g));
+    vik=!(v%*%t(rep(1,g))-rep(1,n)%*%t(1:g));
     if (g<7){
       #P<-permute::allPerms(g)
       P<-permutations(g,g,1:g)
@@ -1263,7 +1262,7 @@ CE_simple=function(z,zprime){
     }
     d=Inf
     for (iter in 1:nrow(P)){
-      Val=sum(abs(zik-zsik[,P[iter,]]))/(2*n)
+      Val=sum(abs(vik-vsik[,P[iter,]]))/(2*n)
       if (Val<d){
         d=Val
         if (Val==0){
@@ -1271,61 +1270,280 @@ CE_simple=function(z,zprime){
         }
       }
     }
-    d
+    d}
+
+
+#     if (is.matrix(v)){
+#       if (ncol(v)>1){
+#         v<-apply(v,1,which.max)
+#       }
+#     }
+#     if (is.matrix(vprime)){
+#       if (ncol(vprime)>1){
+#         vprime<-apply(vprime,1,which.max)
+#       }
+#     }
+#     #### Verification
+#     if (length(v)!=length(vprime)){
+#       stop('Both partitions must contain the same number of points.')
+#     }
+#     #### Parameters
+#     gmax<-max(c(v),vprime)
+#     permutation=permutations(gmax,gmax,1:gmax)
+#     nperm=dim(permutation)[1]
+#     dd=rep(Inf,nperm)
+#     for (i in 1:nperm){
+#       p=t(permutation[i,])
+#       dd[i]=sum(p[1,v]!=vprime)
+#       if (dd[i]==0){
+#         break
+#       }
+#     }
+#     d=min(dd)
+#     i=which.min(dd)
+#     d=d/length(v)
+#     p1=permutation[i,]
+#     tmp=sort(p1,index.return=TRUE)
+#     p2=tmp$ix
+#     list(d=d,p1=p1,p2=p2)
+# }
 
 
 
 
 
 
-
-
-  }
 
 
 ##' CE_LBM function for agreement between co-clustering partitions
 ##'
-##' Produce a measure of agreement between two pairs of partitions for co-clustering. A value of 1 means a perfect match.
+##' Produce a measure of agreement between two pairs of partitions for co-clustering using CE_simple on columns and rows of a matrix. A value of 1 means a perfect match.
 ##'
-##' @param z numeric vector  specifying the class of  rows.
+##' @param v numeric vector  specifying the class of  rows.
 ##' @param w numeric vector  specifying the class of  columns.
-##' @param zprime numeric vector  specifying another partition of  rows.
+##' @param vprime numeric vector  specifying another partition of  rows.
 ##' @param wprime numeric vector  specifying another partition of  columns.
 ##'
-##' @return the value of the index. (between 0 and 1). A value of 0 corresponds to a perfect match.
+##' @return ce_vw: the value of the index (between 0 and 1). A value of 0 corresponds to a perfect match.
 ##'
-##' @usage CE_LBM(z,w,zprime,wprime)
+##' @usage CE_LBM(v,w,vprime,wprime)
 ##' @rdname CE_LBM-proc
 ##' @examples
 ##' \donttest{
 ##' require(bikm1)
 ##' set.seed(42)
-##' z=floor(runif(4)*2)
-##' zprime=floor(runif(4)*2)
+##' v=floor(runif(4)*2)
+##' vprime=floor(runif(4)*2)
 ##' w=floor(runif(4)*3)
 ##' wprime=floor(runif(4)*3)
-##' error=CE_LBM(z,w,zprime,wprime)
+##' error=CE_LBM(v,w,vprime,wprime)
 ##' }
 ##' @export CE_LBM
 
-CE_LBM=function(z,w,zprime,wprime){
+ CE_LBM=function(v,w,vprime,wprime){
+#
+#
+#   L_z=length(z)
+#   L_w=length(w)
+#   if (L_z!=length(zprime)){
+#     warning('Both partitions z and zprime must contain the same number of points.')
+#   }
+#   if (L_w!=length(wprime)){
+#     warning('Both partitions w and wprime must contain the same number of points.')
+#   }
+#
+#
+#   e1=CE_simple(z,zprime)
+#   e2=CE_simple(w,wprime)
+#   CE=e1+e2-e1*e2
+#   CE
+# }
+#
 
-
-  L_z=length(z)
-  L_w=length(w)
-  if (L_z!=length(zprime)){
-    warning('Both partitions z and zprime must contain the same number of points.')
+#### If v or vprime in binary format -> transformation in vector
+if (is.matrix(v)){
+  if (ncol(v)>1){
+    v<-apply(v,1,which.max)
   }
-  if (L_w!=length(wprime)){
-    warning('Both partitions w and wprime must contain the same number of points.')
-  }
-
-
-  e1=CE_simple(z,zprime)
-  e2=CE_simple(w,wprime)
-  CE=e1+e2-e1*e2
-  CE
 }
+if (is.matrix(vprime)){
+  if (ncol(vprime)>1){
+    vprime<-apply(vprime,1,which.max)
+  }
+}
+#### If w or wprime in binary format -> transformation in vector
+if (is.matrix(w)){
+  if (ncol(w)>1){
+    w<-apply(w,1,which.max)
+  }
+}
+if (is.matrix(wprime)){
+  if (ncol(wprime)>1){
+    wprime<-apply(wprime,1,which.max)
+  }
+}
+
+#### Verification
+if (length(v)!=length(vprime)){
+  stop('Both partitions must contain the same number of points.')
+}
+if (length(w)!=length(wprime)){
+  stop('Both partitions must contain the same number of points.')
+}
+
+ce_v=CE_simple(v,vprime)
+ce_w=CE_simple(w,wprime)
+#ce_vw=ce_v$d+ce_w$d-ce_v$d*ce_w$d
+ce_vw=ce_v+ce_w-ce_v*ce_w
+return(ce_vw)
+}
+
+
+ ##' NCE_simple function for agreement between clustering partitions
+ ##'
+ ##' Produce a measure of agreement between two  partitions for clustering. A value of 1 means a perfect match. It's the normalized version of CE_simple.
+ ##'
+ ##' @param v numeric vector  specifying the class of  rows.
+ ##' @param vprime numeric vector  specifying the class of  rows.
+ ##' @return the value of the index. A value of 0 means a perfect match.
+ ##'
+ ##' @usage NCE_simple(v,vprime)
+ ##' @rdname NCE_simple-proc
+ ##' @examples
+ ##' \donttest{
+ ##' require(bikm1)
+ ##' set.seed(42)
+ ##' v=floor(runif(4)*3)
+ ##' vprime=floor(runif(4)*3)
+ ##' error=NCE_simple(v,vprime)
+ ##' error
+ ##' }
+ ##' @export NCE_simple
+
+
+ ### NCE
+ NCE_simple=function(v,vprime){
+   #NCE_simple returns the distance between the two partitions, it's the normalized version of CE_simple.
+   #This distance is computed with the best arrangement.
+   #Inputs:
+   # v  : 1st partition
+   # vprime  : 2nd partition
+   #Outputs:
+   # Distance
+   #####################################################"
+   #### If v or vprime in binary format -> transformation in vector
+   if (is.matrix(v)){
+     if (ncol(v)>1){
+       v<-apply(v,1,which.max)
+     }
+   }
+   if (is.matrix(vprime)){
+     if (ncol(vprime)>1){
+       vprime<-apply(vprime,1,which.max)
+     }
+   }
+   #### Verification
+   n<-length(v)
+   if (n!=length(vprime)){
+     stop('Both partitions must contain the same number of points.')
+   }
+   #### Parameters
+   ### Contingence
+   nv=table(v,vprime)
+   if (nrow(nv)>ncol(nv)){
+     nv<-cbind(nv,matrix(0,ncol=nrow(nv)-ncol(nv),nrow=nrow(nv)))
+   }else if (nrow(nv)<ncol(nv)){
+     nv<-rbind(nv,matrix(0,nrow=ncol(nv)-nrow(nv),ncol=ncol(nv)))
+   }
+   gmax<-nrow(nv)
+   if (gmax>1){
+     res<-(1-abs(lp.assign(-nv/n)$objval))*gmax/(gmax-1)
+   }else{
+     res<-0
+   }
+   return(res)
+ }
+
+
+ ##' NCE_LBM function for agreement between co-clustering partitions using NCE_simple
+ ##'
+ ##' Produce a measure of agreement between two pairs of partitions for co-clustering. A value of 1 means a perfect match.
+ ##'
+ ##' @param v numeric vector  specifying the class of  rows.
+ ##' @param w numeric vector  specifying the class of  columns.
+ ##' @param vprime numeric vector  specifying another partition of  rows.
+ ##' @param wprime numeric vector  specifying another partition of  columns.
+ ##'
+ ##' @return  the value of the index.
+ ##' @usage NCE_LBM(v,w,vprime,wprime)
+ ##' @rdname NCE_LBM-proc
+ ##' @examples
+ ##' \donttest{
+ ##' require(bikm1)
+ ##' set.seed(42)
+ ##' v=floor(runif(4)*2)
+ ##' vprime=floor(runif(4)*2)
+ ##' w=floor(runif(4)*3)
+ ##' wprime=floor(runif(4)*3)
+ ##' error=NCE_LBM(v,w,vprime,wprime)
+ ##' }
+ ##' @export NCE_LBM
+
+
+
+
+
+ NCE_LBM=function(v,w,vprime,wprime){
+   #NCE_croise returns the error between two co-partitions.
+   #Inputs:
+   # v  : 1st partition on rows
+   # w  : 1st partition on columns
+   # vprime  : 2nd partition on rows
+   # wprime  : 2nd partition on columns
+   #Outputs:
+   # value
+   #####################################################"
+
+   #### If v or vprime in binary format -> transformation in vector
+   if (is.matrix(v)){
+     if (ncol(v)>1){
+       v<-apply(v,1,which.max)
+     }
+   }
+   if (is.matrix(vprime)){
+     if (ncol(vprime)>1){
+       vprime<-apply(vprime,1,which.max)
+     }
+   }
+   #### If w or wprime in binary format -> transformation in vector
+   if (is.matrix(w)){
+     if (ncol(w)>1){
+       w<-apply(w,1,which.max)
+     }
+   }
+   if (is.matrix(wprime)){
+     if (ncol(wprime)>1){
+       wprime<-apply(wprime,1,which.max)
+     }
+   }
+
+   #### Verification
+   if (length(v)!=length(vprime)){
+     stop('Both partitions must contain the same number of points.')
+   }
+   if (length(w)!=length(wprime)){
+     stop('Both partitions must contain the same number of points.')
+   }
+
+   ce_v=NCE_simple(v,vprime)
+   ce_w=NCE_simple(w,wprime)
+   ce_croisee=ce_v+ce_w-ce_v*ce_w
+   return(1-ce_croisee)
+ }
+
+
+
+
 
 
 
@@ -1374,13 +1592,13 @@ CE_MLBM=function(z,v,w,zprime,vprime,wprime){
   L_v=length(v)
   L_w=length(w)
   if (L_z!=length(zprime)){
-    warning('Both partitions z and zprime must contain the same number of points.')
+    stop('Both partitions z and zprime must contain the same number of points.')
   }
   if (L_v!=length(vprime)){
-    warning('Both partitions v and vprime must contain the same number of points.')
+    stop('Both partitions v and vprime must contain the same number of points.')
   }
   if (L_w!=length(wprime)){
-    warning('Both partitions w and wprime must contain the same number of points.')
+    stop('Both partitions w and wprime must contain the same number of points.')
   }
 
 
@@ -1390,6 +1608,13 @@ CE_MLBM=function(z,v,w,zprime,vprime,wprime){
   CE=CE_LBM(z,w,zprime,wprime)
   CE
 }
+
+
+
+
+
+
+
 
 
 ##' BinBlocICL_MLBM function  for computation of the ICL criterion in the MLBM

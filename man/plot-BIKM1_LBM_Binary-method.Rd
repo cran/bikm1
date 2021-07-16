@@ -14,7 +14,8 @@
 \item{...}{in the plot method, additional parameters (ignored)}
 }
 \value{
-One \pkg{plot} and three \pkg{ggplot2} objects.
+One \pkg{plot} (initial and estimated partitions) and three \pkg{ggplot2} objects (conditional posterior in each cluster for each matrix and the graph
+of chosen criterion values.
 }
 \description{
 Produce respectively one plot of two-dimensional segmentation of a \code{BIKM1_LBM_Binary} fit, a plot of evolution of  the chosen criterion as a function of the number of row and column clusters, and a boxplot of conditional posteriors for each row and column cluster.
@@ -27,11 +28,8 @@ theta=list()
 theta$pi_g=t(1/g*rep(1,g))
 theta$rho_h=t(1/h*rep(1,h))
 eps=0.1
-theta$alpha_gh=matrix(c(1-eps,eps  ,eps  ,
-                       eps  ,1-eps,eps  ,
-                       eps  ,1-eps,1-eps,
-                       1-eps,1-eps,eps  ,
-                       eps  ,eps  ,eps   ),ncol=h,byrow=TRUE)
+theta$alpha_gh=matrix(c(1-eps,eps,eps,eps,1-eps,eps,eps,1-eps,1-eps,
+1-eps,1-eps,eps,eps,eps,eps),ncol=h,byrow=TRUE)
 n=250
 J=150
 data=BinBlocRnd_LBM(n,J,theta)

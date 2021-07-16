@@ -2065,7 +2065,7 @@ PoissonBlocVisuResum=function(x,v,w){
 
 ##' ARI function for agreement between two partitions
 ##'
-##' Produce a measure of agreement between two partitions.
+##' Produce a measure of agreement between two partitions. A value of 1 means a perfect match.
 ##'
 ##' @param v numeric vector  specifying the class of observations.
 ##' @param vprime numeric vector specifying another partitions of observations.
@@ -2099,44 +2099,101 @@ PoissonBlocVisuResum=function(x,v,w){
 ##' @export ARI
 
 
+
 ARI=function(v,vprime){
-  L_v=length(v)
-  if (L_v!=length(vprime)){
-    warning('Both partitions must contain the same number of points.')
+  #ARI returns the ARI criterion between two partitions.
+  #Inputs:
+  # v  : 1st partition
+  # vprime  : 2nd partition
+  #Outputs:
+  # ari  :  value
+  # nv : contingence
+  #####################################################"
+
+  #### If v or vprime in binary format -> transformation in vector
+  if (is.matrix(v)){
+    if (ncol(v)>1){
+      v<-apply(v,1,which.max)
+    }
   }
-  N_v=max(v)
-  N_vprime=max(vprime)
-  nv=matrix(0,N_v,N_vprime)
-  for (i in 1:N_v){
-    for (j in 1:N_vprime){
-      G1 = which(v==i)
-      G2 = which(vprime==j)
-      nv[i,j] = length(intersect(G1,G2))
+  if (is.matrix(vprime)){
+    if (ncol(vprime)>1){
+      vprime<-apply(vprime,1,which.max)
     }
   }
 
-  ssm = 0
-  sm1 = 0
-  sm2 = 0
-  for (i in 1:N_v){
-    for (j in 1:N_vprime){
-      ssm = ssm + choose(nv[i,j],2)
-    }
+  #### Verification
+  L_v=length(v)
+  if (L_v!=length(vprime)){
+    stop('Both partitions must contain the same number of points.')
   }
-  temp = rowSums(nv)
-  for (i in 1:N_v){
-    sm1 = sm1 + choose(temp[i],2)
-  }
-  temp = colSums(nv)
-  for (i in 1:N_vprime){
-    sm2 = sm2 + choose(temp[i],2)
-  }
+
+  #### Contingency
+  nv=table(v,vprime)
+
+  #### Big sum
+  ssm<-sum(sapply(1:nrow(nv),function(i){
+    sum(sapply(1:ncol(nv),function(j){choose(nv[i,j],2)}))}))
+
+  #### First partial sum
+  sm1<-sum(choose(rowSums(nv),2))
+  #### Second partial sum
+  sm2<-sum(choose(colSums(nv),2))
+
+
   NN = ssm - (sm1*sm2)/choose(L_v,2)
   DD = (sm1 + sm2)/2 - (sm1*sm2)/choose(L_v,2)
   ari = NN/DD
   return(list(ari=ari, nv=nv))
-
 }
+
+
+
+
+
+
+
+
+
+
+# ARI=function(v,vprime){
+#   L_v=length(v)
+#   if (L_v!=length(vprime)){
+#     warning('Both partitions must contain the same number of points.')
+#   }
+#   N_v=max(v)
+#   N_vprime=max(vprime)
+#   nv=matrix(0,N_v,N_vprime)
+#   for (i in 1:N_v){
+#     for (j in 1:N_vprime){
+#       G1 = which(v==i)
+#       G2 = which(vprime==j)
+#       nv[i,j] = length(intersect(G1,G2))
+#     }
+#   }
+#
+#   ssm = 0
+#   sm1 = 0
+#   sm2 = 0
+#   for (i in 1:N_v){
+#     for (j in 1:N_vprime){
+#       ssm = ssm + choose(nv[i,j],2)
+#     }
+#   }
+#   temp = rowSums(nv)
+#   for (i in 1:N_v){
+#     sm1 = sm1 + choose(temp[i],2)
+#   }
+#   temp = colSums(nv)
+#   for (i in 1:N_vprime){
+#     sm2 = sm2 + choose(temp[i],2)
+#   }
+#   NN = ssm - (sm1*sm2)/choose(L_v,2)
+#   DD = (sm1 + sm2)/2 - (sm1*sm2)/choose(L_v,2)
+#   ari = NN/DD
+#   return(list(ari=ari, nv=nv))
+#
+# }
 
 
 
@@ -2155,13 +2212,13 @@ ARI=function(v,vprime){
 ##' @param wprime numeric vector specifying another partition of columns.
 ##' @return a list including the arguments:
 ##'
-##' \code{cari}: value of the index. (between 0 and 1). A value of 1 corresponds to a perfect match.
+##' \code{cari}: value of the index (between 0 and 1). A value of 1 corresponds to a perfect match.
 ##'
 ##' \code{nvw}: contingency table which the index is based on.
 ##'
 ##' @usage CARI(v,w,vprime,wprime)
 ##' @rdname CARI-proc
-##' @references Robert and Vasseur. Comparing high dimensional partitions with the Co-clustering Adjusted Rand Index, Preprint (2017).
+##' @references Robert, Vasseur and Brault. Comparing high dimensional partitions with the Co-clustering Adjusted Rand Index, Journal of classification 38 (1), 158-186 (2021).
 ##' @examples
 ##' \donttest{require(bikm1)
 ##' J=200
@@ -2179,50 +2236,405 @@ ARI=function(v,vprime){
 ##' me$nvw}
 ##' @export CARI
 
+# CARI=function(v,w,vprime,wprime){
+#   L_v=length(v)
+#   L_w=length(w)
+#   if (L_v!=length(vprime)){
+#     warning('Both partitions must contain the same number of points.')
+#   }
+#   if (L_w!=length(wprime)){
+#     warning('Both partitions must contain the same number of points.')
+#   }
+#
+#   N_v=max(v)
+#   N_w=max(w)
+#   N_vprime=max(vprime)
+#   N_wprime=max(wprime)
+#   ari_v=ARI(v,vprime)
+#   ari_w=ARI(w,wprime)
+#   nv=ari_v[[2]]
+#   nw=ari_w[[2]]
+#   nvw=kronecker(nv,nw)
+#   ssm = 0
+#   sm1 = 0
+#   sm2 = 0
+#   for (i in 1:(N_v*N_w)){
+#     for (j in 1:(N_vprime*N_wprime)){
+#       ssm = ssm + choose(nvw[i,j],2)
+#     }
+#   }
+#   temp1=rowSums(nv)
+#   temp2=rowSums(nw)
+#   temp=kronecker(temp1,temp2)
+#   for (i in 1:(N_v*N_w)){
+#     sm1 = sm1 + choose(temp[i],2)
+#   }
+#   temp1=colSums(nv)
+#   temp2=colSums(nw)
+#   temp = kronecker(temp1,temp2)
+#   for (i in 1:(N_vprime*N_wprime)){
+#     sm2 = sm2 + choose(temp[i],2)
+#   }
+#   NN = ssm - sm1*sm2/choose(L_v*L_w,2)
+#   DD = (sm1 + sm2)/2 - sm1*sm2/choose(L_v*L_w,2)
+#   cari = NN/DD
+#   return(list(cari=cari, nvw=nvw))
+# }
+
+
+
 CARI=function(v,w,vprime,wprime){
+  #CARI returns the CARI criterion between two co-partitions.
+  #Inputs:
+  # v  : 1st partition on rows
+  # w  : 1st partition on columns
+  # vprime  : 2nd partition on rows
+  # wprime  : 2nd partition on columns
+  #Outputs:
+  # cari  :  value
+  # nzw : contingence
+  #####################################################"
+
+
+  #### If v or vprime in binary format -> transformation in vector
+  if (is.matrix(v)){
+    if (ncol(v)>1){
+      v<-apply(v,1,which.max)
+    }
+  }
+  if (is.matrix(vprime)){
+    if (ncol(vprime)>1){
+      vprime<-apply(vprime,1,which.max)
+    }
+  }
+  #### If w or wprime in binary format -> transformation in vector
+  if (is.matrix(w)){
+    if (ncol(w)>1){
+      w<-apply(w,1,which.max)
+    }
+  }
+  if (is.matrix(wprime)){
+    if (ncol(wprime)>1){
+      wprime<-apply(wprime,1,which.max)
+    }
+  }
+
+  #### Verification
   L_v=length(v)
   L_w=length(w)
   if (L_v!=length(vprime)){
-    warning('Both partitions must contain the same number of points.')
+    stop('Both partitions must contain the same number of points.')
   }
   if (L_w!=length(wprime)){
-    warning('Both partitions must contain the same number of points.')
+    stop('Both partitions must contain the same number of points.')
   }
 
-  N_v=max(v)
-  N_w=max(w)
-  N_vprime=max(vprime)
-  N_wprime=max(wprime)
-  ari_v=ARI(v,vprime)
-  ari_w=ARI(w,wprime)
-  nv=ari_v[[2]]
-  nw=ari_w[[2]]
+  ### Contingence
+  nv=table(v,vprime)
+  nw=table(w,wprime)
   nvw=kronecker(nv,nw)
-  ssm = 0
-  sm1 = 0
-  sm2 = 0
-  for (i in 1:(N_v*N_w)){
-    for (j in 1:(N_vprime*N_wprime)){
-      ssm = ssm + choose(nvw[i,j],2)
-    }
-  }
-  temp1=rowSums(nv)
-  temp2=rowSums(nw)
-  temp=kronecker(temp1,temp2)
-  for (i in 1:(N_v*N_w)){
-    sm1 = sm1 + choose(temp[i],2)
-  }
-  temp1=colSums(nv)
-  temp2=colSums(nw)
-  temp = kronecker(temp1,temp2)
-  for (i in 1:(N_vprime*N_wprime)){
-    sm2 = sm2 + choose(temp[i],2)
-  }
+
+
+  #### Big sum
+  ssm<-sum(sapply(1:nrow(nvw),function(i){
+    sum(sapply(1:ncol(nvw),function(j){choose(nvw[i,j],2)}))}))
+
+
+  #### First partial sum
+  sm1<-sum(choose(kronecker(rowSums(nv),rowSums(nw)),2))
+  #### Second partial sum
+  sm2<-sum(choose(kronecker(colSums(nv),colSums(nw)),2))
+
   NN = ssm - sm1*sm2/choose(L_v*L_w,2)
   DD = (sm1 + sm2)/2 - sm1*sm2/choose(L_v*L_w,2)
   cari = NN/DD
   return(list(cari=cari, nvw=nvw))
 }
+
+
+
+
+
+
+
+
+
+
+##' MI_simple function for agreement between two partitions
+##'
+##' Produce a measure of agreement between two partitions.(between 0 and 1). A value of 1 corresponds to a perfect match.
+##'
+##' @param v numeric vector  specifying the class of observations.
+##' @param vprime numeric vector specifying another partitions of observations.
+##' @return the value of the index.
+##'
+##'
+##'
+##'
+##' @rdname MI_simple-proc
+##' @usage MI_simple(v,vprime)
+##' @references Robert, Vasseur and Brault. Comparing high-dimensional partitions with the Co-clustering Adjusted Rand Index. Journal of
+##' Classification (2021).
+##' @examples
+##' \donttest{require(bikm1)
+##' J=200
+##' K=120
+##' h=3
+##' l=2
+##' theta=list()
+##' theta$rho_h=1/h *matrix(1,h,1)
+##' theta$tau_l=1/l *matrix(1,l,1)
+##' theta$gamma_hl=matrix(c(1, 6,4, 1, 7, 1),ncol=2)
+##' data=PoissonBlocRnd(J,K,theta)
+##' res=BIKM1_LBM_Poisson(data$x,4,4,4,init_choice='random')
+##' mi=MI_simple(res@model_max$v, data$xrow)
+##' mi
+##' mw=MI_simple(res@model_max$w, data$xcol)}
+##'
+##' @export MI_simple
+
+### ENMI/2
+
+MI_simple = function(v,vprime){
+  #MI returns the MI criterion between two partitions.
+  #Inputs:
+  # v : 1st partition
+  # vprime : 2nd partition
+  #Outputs:
+  # mi : value
+  #####################################################"
+
+
+  #### If v or vprime in binary format -> transformation in vector
+  if (is.matrix(v)){
+    if (ncol(v)>1){
+      v<-apply(v,1,which.max)
+    }
+  }
+  if (is.matrix(vprime)){
+    if (ncol(vprime)>1){
+      vprime<-apply(vprime,1,which.max)
+    }
+  }
+  #### Verification
+  N=length(v)
+  if (N!=length(vprime)){
+    stop('Both partitions must contain the same number of points.')
+  }
+  #### Parameters
+  nv<-table(v,vprime)
+
+  Pkl<-nv/N
+  Pk<-rowSums(Pkl)
+  Pl<-colSums(Pkl)
+
+  #### Calculs entropy
+  ### 0log(0)-> 0
+  Hv=-sum(Pk*log(Pk+(Pk>0)))
+  Hvprime=-sum(Pl*log(Pl+(Pl<=0)))
+
+  I<-sum(Pkl*log(Pkl/(Pk%*%t(Pl)+(Pkl<=0))+(Pkl<=0)))
+
+  return(I/max(Hv,Hvprime))
+}
+
+
+##'ENMI function for agreement between co-clustering partitions
+##'
+##' Produce a measure of agreement between two pairs of partitions for co-clustering. A value of 1 means a perfect match.
+##'
+##' @param v numeric vector  specifying the class of  rows.
+##' @param w numeric vector specifying the class of columns.
+##' @param vprime numeric vector  specifying another partition of rows.
+##' @param wprime numeric vector specifying another partition of columns.
+##' @return the value of the index.
+##'
+##' @usage ENMI(v,w,vprime,wprime)
+##' @rdname ENMI-proc
+##' @references Robert, Vasseur and Brault. Comparing high dimensional partitions with the Co-clustering Adjusted Rand Index, Journal of Classification (2021).
+##' @examples
+##' \donttest{require(bikm1)
+##' J=200
+##' K=120
+##' h=3
+##' l=2
+##' theta=list()
+##' theta$rho_h=1/h *matrix(1,h,1)
+##' theta$tau_l=1/l *matrix(1,l,1)
+##' theta$gamma_hl=matrix(c(1, 6,4, 1, 7, 1),ncol=2)
+##' data=PoissonBlocRnd(J,K,theta)
+##' res=BIKM1_LBM_Poisson(data$x,4,4,4,init_choice='smallVBayes')
+##' me=ENMI(res@model_max$v,res@model_max$w, data$xrow,data$xcol)
+##' me}
+##' @export ENMI
+
+
+
+
+
+
+ENMI = function(v,w,vprime,wprime){
+  #ENMI returns the ENMI criterion between two co-partitions.
+  #Inputs:
+  # v  : 1st partition on rows
+  # w  : 1st partition on columns
+  # vprime  : 2nd partition on rows
+  # wprime  : 2nd partition on columns
+  #Outputs:
+  # cari  :  value
+  # nzw : contingence
+  #####################################################"
+
+  #### If v or vprime in binary format -> transformation in vector
+  if (is.matrix(v)){
+    if (ncol(v)>1){
+      v<-apply(v,1,which.max)
+    }
+  }
+  if (is.matrix(vprime)){
+    if (ncol(vprime)>1){
+      vprime<-apply(vprime,1,which.max)
+    }
+  }
+  #### If w or wprime in binary format -> transformation in vector
+  if (is.matrix(w)){
+    if (ncol(w)>1){
+      w<-apply(w,1,which.max)
+    }
+  }
+  if (is.matrix(wprime)){
+    if (ncol(wprime)>1){
+      wprime<-apply(wprime,1,which.max)
+    }
+  }
+
+  #### Verification
+  if (length(v)!=length(vprime)){
+    stop('Both partitions must contain the same number of points.')
+  }
+  if (length(w)!=length(wprime)){
+    stop('Both partitions must contain the same number of points.')
+  }
+
+  #### Calcul
+  MI_v =MI_simple(v,vprime)
+  MI_w =MI_simple(w,wprime)
+
+  return((MI_v+MI_w)/2)
+}
+
+
+##'CoNMI function for agreement between co-clustering partitions
+##'
+##' Produce a measure of agreement between two pairs of partitions for co-clustering. A value of 1 means a perfect match.
+##'
+##' @param v numeric vector  specifying the class of  rows.
+##' @param w numeric vector specifying the class of columns.
+##' @param vprime numeric vector  specifying another partition of rows.
+##' @param wprime numeric vector specifying another partition of columns.
+##' @return the value of the index.
+##'
+##' @usage CoNMI(v,w,vprime,wprime)
+##' @rdname CoNMI-proc
+##' @references Robert, Vasseur and Brault. Comparing high dimensional partitions with the Co-clustering Adjusted Rand Index, Journal of Classification (2021).
+##' @examples
+##' \donttest{require(bikm1)
+##' J=200
+##' K=120
+##' h=3
+##' l=2
+##' theta=list()
+##' theta$rho_h=1/h *matrix(1,h,1)
+##' theta$tau_l=1/l *matrix(1,l,1)
+##' theta$gamma_hl=matrix(c(1, 6,4, 1, 7, 1),ncol=2)
+##' data=PoissonBlocRnd(J,K,theta)
+##' res=BIKM1_LBM_Poisson(data$x,4,4,4,init_choice='smallVBayes')
+##' me=CoNMI(res@model_max$v,res@model_max$w, data$xrow,data$xcol)
+##' me}
+##' @export CoNMI
+
+
+### coNMI
+
+CoNMI = function(v,w,vprime,wprime){
+  #coNMI returns coNMI MI criterion between two co-partitions.
+  #Inputs:
+  # v  : 1st partition on rows
+  # w  : 1st partition on columns
+  # vprime  : 2nd partition on rows
+  # wprime  : 2nd partition on columns
+  #Outputs:
+  # value
+  #####################################################"
+
+  #### If v or vprime in binary format -> transformation in vector
+  if (is.matrix(v)){
+    if (ncol(v)>1){
+      v<-apply(v,1,which.max)
+    }
+  }
+  if (is.matrix(vprime)){
+    if (ncol(vprime)>1){
+      vprime<-apply(vprime,1,which.max)
+    }
+  }
+  #### If w or wprime in binary format -> transformation in vector
+  if (is.matrix(w)){
+    if (ncol(w)>1){
+      w<-apply(w,1,which.max)
+    }
+  }
+  if (is.matrix(wprime)){
+    if (ncol(wprime)>1){
+      wprime<-apply(wprime,1,which.max)
+    }
+  }
+
+  #### Verification
+  if (length(v)!=length(vprime)){
+    stop('Both partitions must contain the same number of points.')
+  }
+  if (length(w)!=length(wprime)){
+    stop('Both partitions must contain the same number of points.')
+  }
+
+
+  #### Parameters
+  ### Contingence
+  nv<-table(v,vprime)
+  nw<-table(w,wprime)
+
+  Pkl<-nv/sum(nv)
+  Pk<-rowSums(Pkl)
+  Pl<-colSums(Pkl)
+  Pklw<-nw/sum(nw)
+  Pkw<-rowSums(Pklw)
+  Plw<-colSums(Pklw)
+
+  #### Calculs entropy
+  ### 0log(0)-> 0
+  Hv=-sum(Pk*log(Pk+(Pk>0)))
+  Hvprime=-sum(Pl*log(Pl+(Pl<=0)))
+  Hw=-sum(Pkw*log(Pkw+(Pkw>0)))
+  Hwprime=-sum(Plw*log(Plw+(Plw<=0)))
+
+  I<-sum(Pkl*log(Pkl/(Pk%*%t(Pl)+(Pkl<=0))+(Pkl<=0)))+sum(Pklw*log(Pklw/(Pkw%*%t(Plw)+(Pklw<=0))+(Pklw<=0)))
+
+
+  return(I/max(Hv+Hw,Hvprime+Hwprime))
+}
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 ##' PoissonBlocBIC function for the computation of the BIC criterion in the Poisson LBM

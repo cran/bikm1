@@ -209,7 +209,7 @@ setMethod("summary","BIKM1_LBM_Poisson",
 ##'
 ##' @param ... in the plot method, additional parameters (ignored)
 ##'
-##' @return Two \pkg{plot} and two \pkg{ggplot2} object.
+##' @return Two \pkg{plot}s (initial matrix and block estimation) and two \pkg{ggplot2} objects (conditional posterior in each cluster and the graph of chosen criterion values).
 ##'
 ##' @export plot
 ##'
